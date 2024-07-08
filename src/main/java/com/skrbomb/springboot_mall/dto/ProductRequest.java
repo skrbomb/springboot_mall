@@ -1,27 +1,28 @@
-package com.skrbomb.springboot_mall.model;
+package com.skrbomb.springboot_mall.dto;
 
 import com.skrbomb.springboot_mall.constant.ProductCategory;
+import jakarta.validation.constraints.NotNull;
 
-import java.util.Date;
 
-public class Product {
-    private Integer productId;
+
+public class ProductRequest {
+
+    @NotNull
     private String productName;
+
+    @NotNull
     private ProductCategory category;
+
+    @NotNull
     private String imageUrl;
+
+    @NotNull
     private Integer price;
+
+    @NotNull
     private Integer stock;
+
     private String description;
-    private Date createdDate;
-    private Date lastModifiedDate;
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     public ProductCategory getCategory() {
         return category;
@@ -31,12 +32,12 @@ public class Product {
         this.category = category;
     }
 
-    public Date getCreatedDate() {
-        return createdDate;
+    public String getDescription() {
+        return description;
     }
 
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getImageUrl() {
@@ -47,28 +48,12 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
-    public Date getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    public void setLastModifiedDate(Date lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
     public Integer getPrice() {
         return price;
     }
 
     public void setPrice(Integer price) {
         this.price = price;
-    }
-
-    public Integer getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Integer productId) {
-        this.productId = productId;
     }
 
     public String getProductName() {
@@ -86,6 +71,4 @@ public class Product {
     public void setStock(Integer stock) {
         this.stock = stock;
     }
-
-
 }
