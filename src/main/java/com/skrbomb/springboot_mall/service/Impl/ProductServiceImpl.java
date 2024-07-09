@@ -22,4 +22,10 @@ public class ProductServiceImpl implements ProductService {
     public Integer createProduct(ProductRequest productRequest) {
         return productDao.createProduct(productRequest);
     }
+
+    @Override
+    public void updateProduct(Integer productId, ProductRequest productRequest) {
+        //回傳值類別為void 所以沒有return
+        productDao.updateProduct(productId,productRequest);
+    }
 }

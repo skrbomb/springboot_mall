@@ -28,7 +28,6 @@ public class ProductController {
 
     }
 
-
     @PostMapping("/products")
     public ResponseEntity<Product> createProduct(@RequestBody @Valid ProductRequest productRequest){
         Integer productId=productService.createProduct(productRequest);
@@ -38,6 +37,22 @@ public class ProductController {
 /*    在ProductRequest中使用了@NotNull去驗證前端傳來的參數
     因此必須要在參數前面加上@Valid ,ProductRequest中的@NotNull才會真的生效*/
 
+    @PutMapping("/products/{productId}")
+    public ResponseEntity<Product> updateProduct(@PathVariable Integer productId,
+                                                 @Valid @RequestBody ProductRequest productRequest){
+        //先檢查商品是否存在，再進行更新，若不存在則回傳404NOT FOUND
+        Product product=productService.getProductById(productId);
+        if(product!=null){
+            //進行更新數據操作(沒有返回值)
+            productService.updateProduct(productId,productRequest);
+            //對更新過後的數據重新查詢並且返回給使用者
+            Product updatedProduct=productService.getProductById(productId);
+            return ResponseEntity.status(HttpStatus.OK).body(updatedProduct);
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+    }
 }
 
 
