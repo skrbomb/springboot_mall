@@ -23,8 +23,12 @@ public class ProductController {
     //url path代表的是每一個資源之間階層關係
     @GetMapping("/products")
     public ResponseEntity<List<Product>> getProducts(
+            //查詢條件 Filtering
             @RequestParam(required = false) ProductCategory category,
-            @RequestParam(required = false) String search
+            @RequestParam(required = false) String search,
+            //排序 Sorting
+            @RequestParam(defaultValue = "created_date") String orderBy,
+            @RequestParam(defaultValue = "desc") String sort
             ){
         /*將前端傳遞過來的參數統一的整理到productQueryParams 再把該變數放到getProducts()中傳遞
         *這樣做的好處是未來要添加新的查詢條件的時候 不必再去Service層和Dao層修改方法定義
@@ -33,6 +37,8 @@ public class ProductController {
         //把前端傳過來的category,search的值 set 到 productQueryParams中
         productQueryParams.setCategory(category);
         productQueryParams.setSearch(search);
+        productQueryParams.setOrderBy(orderBy);
+        productQueryParams.setSort(sort);
         //回傳的是一個商品的列表
         List<Product> productList=productService.getProducts(productQueryParams);
 /*        基於RESTFUL API的設計理念，查詢列表類型的api不管有無數據都要返回Status Code=200 OK

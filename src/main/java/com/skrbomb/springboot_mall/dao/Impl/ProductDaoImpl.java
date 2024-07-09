@@ -43,6 +43,10 @@ public class ProductDaoImpl implements ProductDao {
             map.put("search","%"+productQueryParams.getSearch()+"%");
         }
 
+        //在實作這種 ORDER BY 的sql語法時，只能透過字串拼接的方式，而無法透過sql的變數實作
+        //不用檢查null,因為在ProductController有設定defaultValue = "created_date"跟defaultValue = "desc"，預設透過創建日期來降序
+        sql=sql+" ORDER BY "+productQueryParams.getOrderBy()+" "+productQueryParams.getSort();
+
         List<Product> productList =namedParameterJdbcTemplate.query(sql,map,new ProductRowMapper());
 
         return productList;
