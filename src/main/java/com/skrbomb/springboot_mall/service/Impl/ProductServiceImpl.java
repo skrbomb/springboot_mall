@@ -28,4 +28,9 @@ public class ProductServiceImpl implements ProductService {
         //回傳值類別為void 所以沒有return
         productDao.updateProduct(productId,productRequest);
     }
+
+    @Override
+    public void deleteProductById(Integer productId) {
+        productDao.deleteProductById(productId);
+    }
 }

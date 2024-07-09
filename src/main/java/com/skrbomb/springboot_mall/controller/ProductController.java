@@ -23,6 +23,7 @@ public class ProductController {
         if(product!=null){
             return ResponseEntity.status(HttpStatus.OK).body(product);
         }else{
+            //build()用來創建並返回一個ResponseEntity對象
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
@@ -52,6 +53,18 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
+    }
+
+    @DeleteMapping("/products/{productId}")
+    public ResponseEntity<?> deleteProduct(@PathVariable Integer productId){
+        Product product=productService.getProductById(productId);
+        if(product!=null){
+            productService.deleteProductById(productId);
+            //Status code=204 NO_CONTENT代表請求已成功處理 但沒有內容返回
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 }
 
