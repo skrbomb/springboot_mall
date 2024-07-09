@@ -1,5 +1,6 @@
 package com.skrbomb.springboot_mall.dao.Impl;
 
+import com.skrbomb.springboot_mall.constant.ProductCategory;
 import com.skrbomb.springboot_mall.dao.ProductDao;
 import com.skrbomb.springboot_mall.dto.ProductRequest;
 import com.skrbomb.springboot_mall.model.Product;
@@ -23,10 +24,24 @@ public class ProductDaoImpl implements ProductDao {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
-    public List<Product> getProducts() {
-        String sql="SELECT product_id , product_name, category, image_url, price, stock, description, created_date, last_modified_date FROM product";
+    public List<Product> getProducts(ProductCategory category,String search) {
+        //使用WHERE 1=1, 方便後續追加查詢條件
+        String sql="SELECT product_id , product_name, category, image_url, price, stock, description, created_date, last_modified_date FROM product WHERE 1=1";
 
         Map<String,Object> map=new HashMap<>();
+
+        if(category!=null){
+            sql+=" AND category=:category";
+            //toString()跟toName()都有轉換成字串的功能
+            map.put("category",category.toString());
+        }
+
+        if(search!=null){
+            //sql拼接字串前要留一個空格以免sql語法錯誤
+            sql+=" AND product_name LIKE :search";
+            //將前端傳過來search的值，前後加上"%"，目的是為了達到模糊查詢的效果
+            map.put("search","%"+search+"%");
+        }
 
         List<Product> productList =namedParameterJdbcTemplate.query(sql,map,new ProductRowMapper());
 

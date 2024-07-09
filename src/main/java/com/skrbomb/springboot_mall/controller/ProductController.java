@@ -1,6 +1,7 @@
 package com.skrbomb.springboot_mall.controller;
 
 
+import com.skrbomb.springboot_mall.constant.ProductCategory;
 import com.skrbomb.springboot_mall.dto.ProductRequest;
 import com.skrbomb.springboot_mall.model.Product;
 import com.skrbomb.springboot_mall.service.ProductService;
@@ -20,9 +21,12 @@ public class ProductController {
 
     //url path代表的是每一個資源之間階層關係
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getProducts(){
+    public ResponseEntity<List<Product>> getProducts(
+            @RequestParam(required = false) ProductCategory category,
+            @RequestParam(required = false) String search
+            ){
         //回傳的是一個商品的列表
-        List<Product> productList=productService.getProducts();
+        List<Product> productList=productService.getProducts(category,search);
 /*        基於RESTFUL API的設計理念，查詢列表類型的api不管有無數據都要返回Status Code=200 OK
         而若是查詢單個數據的API的話，則是有查到才會回200 OK,沒查到則回應404 NOT_FOUND*/
         return ResponseEntity.status(HttpStatus.OK).body(productList);
