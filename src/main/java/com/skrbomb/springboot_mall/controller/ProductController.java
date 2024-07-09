@@ -10,11 +10,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class ProductController {
 
     @Autowired
     private ProductService productService;
+
+    //url path代表的是每一個資源之間階層關係
+    @GetMapping("/products")
+    public ResponseEntity<List<Product>> getProducts(){
+        //回傳的是一個商品的列表
+        List<Product> productList=productService.getProducts();
+/*        基於RESTFUL API的設計理念，查詢列表類型的api不管有無數據都要返回Status Code=200 OK
+        而若是查詢單個數據的API的話，則是有查到才會回200 OK,沒查到則回應404 NOT_FOUND*/
+        return ResponseEntity.status(HttpStatus.OK).body(productList);
+    }
 
     @GetMapping("/products/{productId}")
     public ResponseEntity<Product> getProductById(@PathVariable Integer productId){
