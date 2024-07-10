@@ -7,13 +7,17 @@ import com.skrbomb.springboot_mall.dto.ProductRequest;
 import com.skrbomb.springboot_mall.model.Product;
 import com.skrbomb.springboot_mall.service.ProductService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Validated
 @RestController
 public class ProductController {
 
@@ -26,9 +30,17 @@ public class ProductController {
             //查詢條件 Filtering
             @RequestParam(required = false) ProductCategory category,
             @RequestParam(required = false) String search,
+
             //排序 Sorting
             @RequestParam(defaultValue = "created_date") String orderBy,
-            @RequestParam(defaultValue = "desc") String sort
+            @RequestParam(defaultValue = "desc") String sort,
+
+            /*這邊要記得在Controller class 上加上@Validated註解 @Max @Min 才會生效
+            * limit表示這次要取得幾筆數據 offset表示要跳過幾筆數據
+            * 分頁除了可以讓前端一頁一頁的呈現給使用者以外 更重要的目的是保護資料庫的效能*/
+            //分頁 Pagination
+            @RequestParam(defaultValue = "5") @Max(100) @Min(0) Integer limit,
+            @RequestParam(defaultValue = "0") @Min(0) Integer offset
             ){
         /*將前端傳遞過來的參數統一的整理到productQueryParams 再把該變數放到getProducts()中傳遞
         *這樣做的好處是未來要添加新的查詢條件的時候 不必再去Service層和Dao層修改方法定義
@@ -39,6 +51,9 @@ public class ProductController {
         productQueryParams.setSearch(search);
         productQueryParams.setOrderBy(orderBy);
         productQueryParams.setSort(sort);
+        productQueryParams.setLimit(limit);
+        productQueryParams.setOffset(offset);
+
         //回傳的是一個商品的列表
         List<Product> productList=productService.getProducts(productQueryParams);
 /*        基於RESTFUL API的設計理念，查詢列表類型的api不管有無數據都要返回Status Code=200 OK
