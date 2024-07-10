@@ -58,7 +58,7 @@ public class ProductController {
         //回傳的是一個商品的列表 product list
         List<Product> productList=productService.getProducts(productQueryParams);
 
-        //取得 product 總數
+        //取得 product 總數 可以用來計算最後一頁的頁碼
         Integer total=productService.countProduct(productQueryParams);
 
         //分頁

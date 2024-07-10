@@ -30,19 +30,8 @@ public class ProductDaoImpl implements ProductDao {
 
         Map<String,Object> map=new HashMap<>();
 
-        //查詢條件
-        if(productQueryParams.getCategory()!=null){
-            sql+=" AND category=:category";
-            //toString()跟toName()都有轉換成字串的功能
-            map.put("category",productQueryParams.getCategory().toString());
-        }
-
-        if(productQueryParams.getSearch()!=null){
-            //sql拼接字串前要留一個空格以免sql語法錯誤
-            sql+=" AND product_name LIKE :search";
-            //將前端傳過來search的值，前後加上"%"，目的是為了達到模糊查詢的效果
-            map.put("search","%"+productQueryParams.getSearch()+"%");
-        }
+        //把重複的查詢條件封裝成一個private方法使用
+        sql=addFilteringSql(sql,map,productQueryParams);
 
         /*這個queryForObject 方法通常是用在取count值的時候
         * 第三個參數要填上Integer.class 表示將count值從資料庫的值轉換成Integer類型的對象*/
@@ -57,19 +46,8 @@ public class ProductDaoImpl implements ProductDao {
 
         Map<String,Object> map=new HashMap<>();
 
-        //查詢條件
-        if(productQueryParams.getCategory()!=null){
-            sql+=" AND category=:category";
-            //toString()跟toName()都有轉換成字串的功能
-            map.put("category",productQueryParams.getCategory().toString());
-        }
-
-        if(productQueryParams.getSearch()!=null){
-            //sql拼接字串前要留一個空格以免sql語法錯誤
-            sql+=" AND product_name LIKE :search";
-            //將前端傳過來search的值，前後加上"%"，目的是為了達到模糊查詢的效果
-            map.put("search","%"+productQueryParams.getSearch()+"%");
-        }
+        //把重複的查詢條件封裝成一個private方法使用
+        sql=addFilteringSql(sql,map,productQueryParams);
 
         //排序
         //在實作這種 ORDER BY 的sql語法時，只能透過字串拼接的方式，而無法透過sql的變數實作
@@ -159,5 +137,25 @@ public class ProductDaoImpl implements ProductDao {
         Map<String, Object> map=new HashMap<>();
         map.put("productId",productId);
         namedParameterJdbcTemplate.update(sql,map);
+    }
+
+
+    /*優先使用private 目的是為了更好的管理程式的使用範圍 避免跟其他class的高度耦合*/
+    private String addFilteringSql(String sql,Map<String, Object> map,ProductQueryParams productQueryParams){
+        //查詢條件
+        if(productQueryParams.getCategory()!=null){
+            sql+=" AND category=:category";
+            //toString()跟toName()都有轉換成字串的功能
+            map.put("category",productQueryParams.getCategory().toString());
+        }
+
+        if(productQueryParams.getSearch()!=null){
+            //sql拼接字串前要留一個空格以免sql語法錯誤
+            sql+=" AND product_name LIKE :search";
+            //將前端傳過來search的值，前後加上"%"，目的是為了達到模糊查詢的效果
+            map.put("search","%"+productQueryParams.getSearch()+"%");
+        }
+
+        return sql;
     }
 }
