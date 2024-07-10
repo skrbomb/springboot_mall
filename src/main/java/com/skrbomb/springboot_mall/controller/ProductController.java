@@ -6,6 +6,7 @@ import com.skrbomb.springboot_mall.dto.ProductQueryParams;
 import com.skrbomb.springboot_mall.dto.ProductRequest;
 import com.skrbomb.springboot_mall.model.Product;
 import com.skrbomb.springboot_mall.service.ProductService;
+import com.skrbomb.springboot_mall.util.Page;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -26,7 +27,7 @@ public class ProductController {
 
     //url path代表的是每一個資源之間階層關係
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getProducts(
+    public ResponseEntity<Page<Product>> getProducts(
             //查詢條件 Filtering
             @RequestParam(required = false) ProductCategory category,
             @RequestParam(required = false) String search,
@@ -54,11 +55,21 @@ public class ProductController {
         productQueryParams.setLimit(limit);
         productQueryParams.setOffset(offset);
 
-        //回傳的是一個商品的列表
+        //回傳的是一個商品的列表 product list
         List<Product> productList=productService.getProducts(productQueryParams);
+
+        //取得 product 總數
+        Integer total=productService.countProduct(productQueryParams);
+
+        //分頁
+        Page<Product> page=new Page<>();
+        page.setLimit(limit);
+        page.setOffset(offset);
+        page.setTotal(total);
+        page.setResults(productList);
 /*        基於RESTFUL API的設計理念，查詢列表類型的api不管有無數據都要返回Status Code=200 OK
         而若是查詢單個數據的API的話，則是有查到才會回200 OK,沒查到則回應404 NOT_FOUND*/
-        return ResponseEntity.status(HttpStatus.OK).body(productList);
+        return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
     @GetMapping("/products/{productId}")
