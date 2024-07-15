@@ -130,6 +130,19 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
+    public void updateStock(Integer productId, Integer stock) {
+        String sql="UPDATE product SET stock=:stock, last_modified_date=:lastModifiedDate" +
+                " WHERE product_id=:productId";
+        Map<String,Object> map=new HashMap<>();
+        map.put("productId",productId);
+        map.put("stock",stock);
+        map.put("lastModifiedDate",new Date());
+
+        namedParameterJdbcTemplate.update(sql,map);
+    }
+
+
+    @Override
     public void deleteProductById(Integer productId) {
 
         String sql="DELETE FROM product WHERE product_id=:productId";
@@ -138,7 +151,6 @@ public class ProductDaoImpl implements ProductDao {
         map.put("productId",productId);
         namedParameterJdbcTemplate.update(sql,map);
     }
-
 
     /*優先使用private 目的是為了更好的管理程式的使用範圍 避免跟其他class的高度耦合*/
     private String addFilteringSql(String sql,Map<String, Object> map,ProductQueryParams productQueryParams){
