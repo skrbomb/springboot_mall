@@ -5,6 +5,7 @@ import com.skrbomb.springboot_mall.dao.ProductDao;
 import com.skrbomb.springboot_mall.dao.UserDao;
 import com.skrbomb.springboot_mall.dto.BuyItem;
 import com.skrbomb.springboot_mall.dto.CreateOrderRequest;
+import com.skrbomb.springboot_mall.dto.OrderQueryParams;
 import com.skrbomb.springboot_mall.model.Order;
 import com.skrbomb.springboot_mall.model.OrderItem;
 import com.skrbomb.springboot_mall.model.Product;
@@ -98,5 +99,23 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderItemList(orderItemList);
 
         return order;
+    }
+
+    @Override
+    public Integer countOrder(OrderQueryParams orderQueryParams) {
+        return orderDao.countOrder(orderQueryParams);
+    }
+
+    @Override
+    public List<Order> getOrders(OrderQueryParams orderQueryParams) {
+
+        List<Order> orderList=orderDao.getOrders(orderQueryParams);
+
+        for(Order order:orderList){
+            List<OrderItem> orderItemList=orderDao.getOrderItemByOrderId(order.getOrderId());
+
+            order.setOrderItemList(orderItemList);
+        }
+        return orderList;
     }
 }
